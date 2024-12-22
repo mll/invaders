@@ -1,14 +1,18 @@
-# invaders
+# invaders - detect space invaders
 
-A Clojure library designed to ... well, that part is up to you.
+Plan:
 
-## Usage
+1. Parse space invaders and radar samples.
+2. Create tests.
+3. Create a simple linear filter to locate invaders.
 
-FIXME
+We will use clojure data structures for linear algebra here - we are supposed to showcase ours skills 
+and not optimise performance.
+
 
 ## License
 
-Copyright © 2024 FIXME
+Copyright © 2024 Marek Lipert
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
