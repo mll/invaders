@@ -14,7 +14,7 @@
    {:pre [(spec/valid? :invaders.schema/radar-pattern pattern)
           (spec/valid? :invaders.schema/radar-pattern radar)
           (spec/valid? :invaders.schema/cell fill)]
-    :post [(spec/valid? :invaders.schema/radar-pattern (:prepared %))
+    :post [(spec/valid? :invaders.schema/preprocessed-radar %)
            (= (count pattern) (count (:prepared %)))
            (= (count (first pattern)) (count (first (:prepared %))))]}
    (let [height (count pattern)        
@@ -30,12 +30,30 @@
          to-take-width (- width pre-x)
          to-take-height (- height pre-y)
          post-y (min (max 0 (- to-take-height (- radar-height y))) height)
-         post-x (min (max 0 (- to-take-width (- radar-width x))) width)]
-     {:filled-ratio (/
-                     (+ (* (- width pre-x) pre-y) ; top
-                        (* height pre-x) ; left + common with top
-                        (* (- width post-x) post-y) ; bottom
-                        (* height post-x)) ; right + common with bottom
+         post-x (min (max 0 (- to-take-width (- radar-width x))) width)
+
+         external-top (for [x (range pre-x width)
+                            y (range pre-y)]
+                        [x y])
+         external-left (for [x (range pre-x)
+                             y (range height)]
+                         [x y])
+         external-bottom (for [x (range (- width post-x))
+                               y (range (- height post-y) height)]
+                           [x y])
+         
+         external-right (for [x (range (- width post-x) width)
+                              y (range height)]
+                          [x y])
+         external-tiles (set (concat external-top external-bottom external-left external-right))]
+     (assert (= (count external-top)) (* (- width pre-x) pre-y)) ; top
+     (assert (= (count external-left)) (* height pre-x)) ; left + common with top
+     (assert (= (count external-bottom)) (* (- width post-x) post-y)) ; bottom
+     (assert (= (count external-right)) (* height post-x)) ; right + common with bottom
+     
+     {:external-tiles external-tiles
+      :filled-ratio (/ 
+                     (count external-tiles) 
                      (* height width))                  
       :prepared
       (vec 

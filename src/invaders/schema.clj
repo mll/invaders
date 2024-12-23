@@ -17,5 +17,15 @@
 (spec/def ::radar-pattern (spec/and (spec/coll-of ::radar-row)
                                     ::equal-rows))
 
+(spec/def ::natural-number (spec/and int? #(>= % 0)))
 
+(spec/def ::cell-index (spec/and (spec/coll-of ::natural-number)
+                                 #(= (count %) 2)))
+
+(spec/def ::cell-indices (spec/coll-of ::cell-index))
+
+(spec/def ::external-tiles ::cell-indices)
+(spec/def ::prepared ::radar-pattern)
+
+(spec/def ::preprocessed-radar (spec/keys :req-un [::external-tiles ::filled-ratio ::prepared]))
 
