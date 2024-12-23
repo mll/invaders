@@ -1,6 +1,7 @@
 (ns invaders.core-test
   (:require [clojure.test :refer :all]
             [invaders.parser :as parser]
+            [invaders.core :refer [run]]
             [clojure.pprint :refer [pprint]]
             [invaders.preprocess :as preprocess]))
 
@@ -98,7 +99,6 @@
                [10 0] [10 1] [10 2] [10 3] [10 4] [10 5] [10 6]}
              external))))
 
-
   (testing "Ratio"
     (let [pattern-1 (parser/parse-radar "resources/invader-1.txt")
           radar (parser/parse-radar "resources/sample-1.txt")
@@ -107,3 +107,34 @@
       (is (= 1 ratio))
       (is (= 88 (count external))))))
 
+(deftest matching
+  (testing "Matching"
+    (is (= {:pattern-1
+            [[10 -1 129/176]
+             [13 27 59/88]
+             [15 -2 29/44]
+             [15 27 29/44]
+             [16 27 15/22]
+             [60 13 10/11]
+             [74 1 7/8]
+             [79 40 15/22]
+             [82 40 65/88]
+             [85 12 19/22]
+             [86 12 61/88]],
+            :pattern-2
+            [[16 28 55/64]
+             [17 45 49/64]
+             [18 -1 49/64]
+             [18 45 21/32]
+             [35 15 27/32]
+             [37 13 21/32]
+             [42 0 7/8]
+             [60 14 23/32]
+             [63 14 45/64]
+             [74 2 21/32]
+             [77 2 23/32]
+             [82 41 55/64]
+             [83 40 45/64]
+             [87 12 43/64]
+             [88 13 21/32]]} 
+           (run "resources/sample-1.txt" 0.65)))))
