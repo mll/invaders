@@ -14,9 +14,9 @@
    {:pre [(spec/valid? :invaders.schema/radar-pattern pattern)
           (spec/valid? :invaders.schema/radar-pattern radar)
           (spec/valid? :invaders.schema/cell fill)]
-    :post [(spec/valid? :invaders.schema/radar-pattern %)
-           (= (count pattern) (count %))
-           (= (count (first pattern)) (count (first %)))]}
+    :post [(spec/valid? :invaders.schema/radar-pattern (:prepared %))
+           (= (count pattern) (count (:prepared %)))
+           (= (count (first pattern)) (count (first (:prepared %))))]}
    (let [height (count pattern)        
          width (count (first pattern))
          radar-height (count radar)
@@ -28,12 +28,22 @@
          pre-x (max (- x) 0)
          pre-y (max (- y) 0)
          to-take-width (- width pre-x)
-         to-take-height (- height pre-y)]
-     (vec 
-      (concat
-       (vec (take pre-y filler-rows))
-       (map #(vec (concat (take pre-x fillers)
-                          (take to-take-width (drop x %))
-                          (take (min (- to-take-width (- radar-width x)) width) fillers)))
-            (vec (concat (take to-take-height (drop y radar))
-                         (take (min (- to-take-height (- radar-height y)) height) filler-rows)))))))))
+         to-take-height (- height pre-y)
+         post-y (min (max 0 (- to-take-height (- radar-height y))) height)
+         post-x (min (max 0 (- to-take-width (- radar-width x))) width)]
+     {:filled-ratio (/
+                     (+ (* (- width pre-x) pre-y) ; top
+                        (* height pre-x) ; left + common with top
+                        (* (- width post-x) post-y) ; bottom
+                        (* height post-x)) ; right + common with bottom
+                     (* height width))                  
+      :prepared
+      (vec 
+       (concat
+        (vec (take pre-y filler-rows))
+        (map #(vec (concat (take pre-x fillers)
+                           (take to-take-width (drop x %))
+                           (take post-x fillers)))
+             
+             (vec (concat (take to-take-height (drop y radar)))))
+        (take post-y filler-rows)))})))
