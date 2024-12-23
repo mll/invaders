@@ -11,8 +11,6 @@ and not optimise performance.
 
 # How to run?
 
-For tests:
-
 lein run "resources/simple-1.txt" 0.8
 
 for swiping the simple-1 radar input with threshold probability 0.8
