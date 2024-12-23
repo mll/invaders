@@ -11,9 +11,12 @@ and not optimise performance.
 
 # How to run?
 
-lein run "resources/simple-1.txt" 0.8
+lein run "resources/simple-1.txt" 0.75
 
-for swiping the simple-1 radar input with threshold probability 0.8
+for swiping the simple-1 radar input with threshold probability 0.75
+
+It has been experimentally determined that 0.75 threshold works well for sample-1.
+
 
 ## License
 
