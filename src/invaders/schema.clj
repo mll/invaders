@@ -26,6 +26,7 @@
 
 (spec/def ::external-tiles ::cell-indices)
 (spec/def ::prepared ::radar-pattern)
+(spec/def ::filled-ratio number?)
 
 (spec/def ::preprocessed-radar (spec/keys :req-un [::external-tiles ::filled-ratio ::prepared]))
 
